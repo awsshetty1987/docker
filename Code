@@ -1,0 +1,40 @@
+pipeline
+{
+    agent any
+environment{
+customImage=' '
+
+}
+stages
+{
+stage("scm")
+{
+steps
+{
+git 'https://github.com/awsshetty1987/docker.git'
+}
+}
+stage("build")
+{
+steps
+{
+script
+{
+customImage = docker.build("awsshetty/pipe:${env.BUILD_ID}")
+}
+}
+}
+stage("push")
+{
+steps
+{
+script
+{
+docker.withRegistry('', 'dockercred') {
+        customImage.push()
+}
+}
+}
+}
+}
+}
